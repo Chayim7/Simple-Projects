@@ -1,6 +1,6 @@
 from contacts import show_contacts, find_contact, count_contacts, add_contact, remove_contact, edit_contact
 
-contact_dictionary = {"john": "336-555-123", "mary": "336-789-4585", "david": "336-555-9999", "johnson": "336567-896"}
+contact_dictionary = {"john": "336-555-123", "mary": "336-789-4585", "david": "336-555-9999", "johnson": "336-567-896"}
 
 while True:
 	print("CONTACT MANAGER")
