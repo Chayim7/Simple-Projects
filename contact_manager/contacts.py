@@ -1,66 +1,64 @@
-#It shows all the contacts we have
-def show_contacts(contactsDict):
-    
-    for contacts in contactsDict:
-        #print("contact information: ", contacts, contactsDict[contacts])
-        print("Contact Information: ", contacts, (f"({contactsDict[contacts]})"))
-    print("")
-    
-
-#find specific contacts
-def find_contact(contactsDicts_finder, contact_name):
-    contact_name = contact_name.strip().lower()
-    
-    if contact_name in contactsDicts_finder:
-        print("The contact phone number for: ",contact_name,"is",contactsDicts_finder[contact_name])
-        print("")
-        return contactsDicts_finder[contact_name]
-    else:
-        print(f"The contact name: {contact_name} is not found")
-        print("")
-        return None
+# This helper makes every name consistent before we use it in the dictionary.
+# Example: "  David " becomes "david" so name lookups are not case-sensitive.
+def normalize_name(contact_name):
+    return contact_name.strip().lower()
 
 
-#counts how many contacts we have
-def count_contacts(contactsDict):
-    contacts_counter = 0
-    
-    
-    for contacts in contactsDict:
-        contacts_counter = contacts_counter + 1
-    print(f"There are: {contacts_counter} contacts")
-    print("")
+# Return the contact list in a predictable order so the menu can print it neatly.
+# sorted(contacts_dict.items()) gives us a list like [("david", "336-555-9999"), ...].
+def show_contacts(contacts_dict):
+    return sorted(contacts_dict.items())
 
 
-#add new contact to the dictionary
+# Search for a contact by name.
+# If the name exists, return its phone number; otherwise, return None.
+def find_contact(contacts_dict, contact_name):
+    normalized_name = normalize_name(contact_name)
+    return contacts_dict.get(normalized_name)
+
+
+# Count how many contacts are currently stored in the dictionary.
+def count_contacts(contacts_dict):
+    return len(contacts_dict)
+
+
+# Add a new contact only if that name is not already in the dictionary.
+# If the name does already exist, do not overwrite it.
 def add_contact(contacts_dict, contact_name, contact_number):
-    contact_name = contact_name.strip().lower()
-    contacts_dict[contact_name] = contact_number #create a keyname <Name of the new contact> and assign it a value pair <phone number>
-    print(f"Contact {contact_name} added successfully.")
-    print("")
+    normalized_name = normalize_name(contact_name)
+
+    # If the name already exists, do not replace the existing contact.
+    if normalized_name in contacts_dict:
+        return False
+
+    # Store the contact using a lowercase, trimmed name as the key.
+    contacts_dict[normalized_name] = contact_number.strip()
+    return True
 
 
-#remove contact from dictionary
+# Remove a contact only if the name exists in the dictionary.
+# If the name does not exist, do not remove it.
 def remove_contact(contacts_dict, contact_name):
-    contact_name = contact_name.strip().lower()
-    
-    if contact_name in contacts_dict:
-        del contacts_dict[contact_name] #delete the keyname <Name of the contact> and its value pair <phone number>
-        print(f"Contact {contact_name} removed successfully.")
-        print("")
-    else:
-        print(f"Contact {contact_name} not found. No contact removed.")
-        print("")
+    normalized_name = normalize_name(contact_name)
+
+    # If the name does not exist, do not remove it.
+    if normalized_name not in contacts_dict:
+        return False
+
+    # Delete the contact from the dictionary.
+    del contacts_dict[normalized_name]
+    return True
 
 
-#edit contact information
+# Update a contact's phone number if the contact already exists.
+# If the name is missing, do not create a new one or change anything.
 def edit_contact(contacts_dict, contact_name, new_contact_number):
-    contact_name = contact_name.strip().lower()
-    
-    if contact_name in contacts_dict:
-        contacts_dict[contact_name] = new_contact_number
-        print(f"Contact {contact_name} updated successfully.")
-        print("")
-    else:
-        print(f"Contact {contact_name} not found. No contact updated.")
-        print("")
+    normalized_name = normalize_name(contact_name)
+
+    # If the contact is not found, do not update anything.
+    if normalized_name not in contacts_dict:
+        return False
+
+    # Replace the phone number for the existing contact.
+    contacts_dict[normalized_name] = new_contact_number.strip()
+    return True
